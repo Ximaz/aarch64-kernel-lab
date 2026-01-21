@@ -11,7 +11,7 @@ _start:
 
     BL _clear_bss_section
 
-    @ Setup mini UART
+    // Setup mini UART
     BL _enable_mini_uart
     BL _disable_transmitter_and_receiver
     BL _disable_interrupt
@@ -26,9 +26,9 @@ _start:
 
     B _start
 
-@ X0 = destination
-@ X1 = byte
-@ X2 = size
+// X0 = destination
+// X1 = byte
+// X2 = size
 _memset:
     CMP X2, #0
     BEQ _memset.done
@@ -100,8 +100,8 @@ _disable_fifo:
     STR W1, [X0]
     RET
 
-@ Wait for an interrupt to occur, then store the type of interrupt that happened
-@ into W1
+// Wait for an interrupt to occur, then store the type of interrupt that happened
+// into W1
 _interrupt:
     LDR X0, =AUX_MU_IER_REG
     MOV W1, #0b00000000000000000000000000000011
@@ -119,21 +119,22 @@ _interrupt_enable_register_1:
     STR W1, [X0]
     RET
 
-@ Read 32bits from AUX_MU_LSR_REG to check if data is writable
-@ Write 32bits to AUX_MU_IO_REG from W1, if doable
+// Read 32bits from AUX_MU_LSR_REG to check if data is writable
+// Write 32bits to AUX_MU_IO_REG from W0, if doable
 _write_char:
+    MOV X1, X0
     LDR X0, =AUX_MU_LSR_REG
     LDR W2, [X0]
-    TBZ W2, #0, _write_char.end
+    TBZ W2, #5, _write_char.end
 
     LDR X0, =AUX_MU_IO_REG
     STRB W1, [X0]
 _write_char.end:
     RET
 
-@ Read 32bits from AUX_MU_LSR_REG to cehck if data is available
-@ Read 32bits from AUX_MU_IO_REG to get the data, if available
-@ Return the 32bits read data, or zero, into W0
+// Read 32bits from AUX_MU_LSR_REG to cehck if data is available
+// Read 32bits from AUX_MU_IO_REG to get the data, if available
+// Return the 32bits read data, or zero, into W0
 _read_char:
     LDR X0, =AUX_MU_LSR_REG
     LDR W1, [X0]
@@ -146,36 +147,41 @@ _read_char.done:
     MOV W0, W1
     RET
 
-@ Read stdin until EOF or max length is reached
-@ X0 = buffer
-@ X1 = max size
+// Read stdin until EOF or max length is reached
+// X0 = buffer
+// X1 = max size
 _read:
-    STP X29, X30, [SP, #-16]! @ Save frame pointer and return address onto the stack
-    MOV X29, SP @ Set the frame pointer to the stack pointer <=> base pointer
-    MOV X3, #0 @ Number of bytes read from the UART stdin
-    CMP X1, #0 @ Checks the max bytes to read is at least 1 byte
-    BLE _read.done @ If not, exit the procedure
-    MOV X2, X0 @ Saves the buffer address into X2 (X0 will be used later)
-    MOV X4, X1 @ Saves the max bytes to read into X4 (x1 will be used later)
-    SUB X4, X4, #1 @ Decrease by one to avoid out-of-bounds write
+    STP X29, X30, [SP, #-16]! // Save frame pointer and return address onto the stack
+    MOV X29, SP // Set the frame pointer to the stack pointer <=> base pointer
+    MOV X3, #0 // Number of bytes read from the UART stdin
+    CMP X1, #0 // Checks the max bytes to read is at least 1 byte
+    BLE _read.done // If not, exit the procedure
+    MOV X2, X0 // Saves the buffer address into X2 (X0 will be used later)
+    MOV X4, X1 // Saves the max bytes to read into X4 (x1 will be used later)
+    SUB X4, X4, #1 // Decrease by one to avoid out-of-bounds write
 _read.wait_char:
-    BL _read_char @ Try to read a byte into W0
-    CBZ W0, _read.wait_char @ If W0 equals 0, keep trying to read a byte
-    STRB W0, [X2], #1 @ Store the read byte into the buffer and increase the address
-    ADD X3, X3, #1 @ Increase the total number of read bytes
-    CMP W0, #'\r' @ If EOF ('\r') equals W0
-    BEQ _read.done @ exit the procedure
-    CMP X3, X4 @ If the total number of read bytes is less than the max bytes to be read
-    BLE _read.wait_char @ keep reading from UART stdin
+    BL _read_char // Try to read a byte into W0
+    CBZ W0, _read.wait_char // If W0 equals 0, keep trying to read a byte
+    STRB W0, [X2]
+    CMP W0, #'\r' // If EOF ('\r') equals W0
+    BEQ _read.done // exit the procedure
+    ADD X3, X3, #1 // Increase the total number of read bytes
+    CMP X3, X4 // If the total number of read bytes is less than the max bytes to be read
+    BEQ _read.done // keep reading from UART stdin
+    ADD X2, X2, #1 // Store the read byte into the buffer and increase the address
+    B _read.wait_char
 _read.done:
     MOV W0, #0
-    STRB W0, [X2] @ null-terminate the buffer
-    MOV X0, X3 @ Restore the total number of bytes read into X0
-    LDP X29, X30, [SP], #16 @ restore frame pointer and return address
-    RET @ Exit the procedure and restore program counter
+    STRB W0, [X2] // null-terminate the buffer
+    MOV X0, X3 // Restore the total number of bytes read into X0
+    LDP X29, X30, [SP], #16 // restore frame pointer and return address
+    RET // Exit the procedure and restore program counter
 
 
 _shell:
+    MOV X0, #'>'
+    BL _write_char
+
     ADR X0, __stdin_buffer
     MOV X1, #127
     BL _read
