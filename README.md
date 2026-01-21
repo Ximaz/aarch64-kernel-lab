@@ -43,7 +43,9 @@ $ lldb
 
 Here is the list of resources I'm learning from to build this project :
 - hands-on lab : https://grasslab.github.io/osdi/en/labs/lab0.html
+- hands-on lab (remake ?) : https://oscapstone.github.io/labs/lab1.html
 - ARMv8 Base Instructions : https://developer.arm.com/documentation/ddi0602/2025-12/Base-Instructions
 - ARMv8 System Registers : https://developer.arm.com/documentation/102374/0103/Registers-in-AArch64---system-registers
+- mini UART setup on RasPI3b : https://oscapstone.github.io/labs/hardware/uart.html
 
 I will try to keep this list as updated as possible.

@@ -14,9 +14,16 @@ SECTIONS
     } :text
 
 
+    .data :
+    {
+        *(.data)
+    } :data
+
     .bss :
     {
         . = ALIGN(16);
+        __stdin_buffer = .;
+        . += 128;
         __bss_start = .;
         . += 0x4000; /* 16kb */
         __bss_end = .;
