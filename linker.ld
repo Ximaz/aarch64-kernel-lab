@@ -7,15 +7,26 @@ PHDRS
 SECTIONS
 {
     . = 0x80000;
+
     .text :
     {
         *(.text)
     } :text
+
+
     .bss :
     {
         . = ALIGN(16);
-        stack_bottom = .;
-        . += 0x4000;
-        stack_top = .;
+        __bss_start = .;
+        . += 0x4000; /* 16kb */
+        __bss_end = .;
+    } :data
+
+    .stack :
+    {
+        . = ALIGN(16);
+        __stack_bottom = .;
+        . += 0x4000; /* 16kb */
+        __stack_top = .;
     } :data
 }
