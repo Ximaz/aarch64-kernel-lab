@@ -16,7 +16,7 @@
 //   The return value is stored in X0.
 //
 // Affected registers
-//   X0, X1, X3, X4, X29, X30, SP
+//   X0, X1, X3, X4, X5, X6, X29, X30, SP
 // -----------------------------------------------------------------------------
 .global uart_read_line
 uart_read_line:
@@ -46,8 +46,9 @@ uart_read_line:
     BL uart_write_byte
     B .loop
 .done:
+    MOV X6, X3
     BL uart_write_crlf
-    MOV X0, X3
+    MOV X0, X6
     LDP X29, X30, [SP], #16
     RET
 
