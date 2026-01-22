@@ -9,4 +9,4 @@ disable_interrupt:
     RET
 
 .section .rodata
-.equ AUX_MU_IER_REG, 0x3F215044
+AUX_MU_IER_REG = 0x3F215044

@@ -9,4 +9,4 @@ set_uart_bit_mode:
     RET
 
 .section .rodata
-.equ AUX_MU_LCR_REG, 0x3F21504C
+AUX_MU_LCR_REG = 0x3F21504C

@@ -9,4 +9,4 @@ disable_transmitter_receiver:
     RET
 
 .section .rodata
-.equ AUX_MU_CNTL_REG, 0x3F215060
+AUX_MU_CNTL_REG = 0x3F215060

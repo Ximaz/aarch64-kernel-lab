@@ -9,4 +9,4 @@ enable_interrupt_request_1:
     RET
 
 .section .rodata
-.equ INT_REG_1, 0x3F00B210
+INT_REG_1 = 0x3F00B210

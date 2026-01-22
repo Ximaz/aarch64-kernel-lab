@@ -3,7 +3,6 @@
 .global _start
 
 .extern __stack_top
-.extern __stdin_buffer
 
 .extern clear_bss_section
 .extern clear_stdin_buffer
@@ -19,9 +18,7 @@
 .extern set_uart_bit_mode
 .extern disable_auto_control_flow
 
-.extern uart_read
-.extern uart_write
-
+.extern shell
 
 _start:
     ADR X0, __stack_top
@@ -32,9 +29,7 @@ _start:
 
     BL _configure_uart
 
-    BL _shell
-
-    B _start
+    B shell
 
 _configure_uart:
     STP X29, X30, [SP, #-16]!
@@ -50,26 +45,3 @@ _configure_uart:
     BL enable_interrupt_request_1
     LDP X29, X30, [SP], #16
     RET
-
-_shell:
-    ADR X0, SHELL_PROMPT
-    MOV X1, #2
-    BL uart_write
-
-    ADR X0, __stdin_buffer
-    MOV X1, #127
-    BL uart_read
-
-    MOV X1, X0
-    ADR X0, __stdin_buffer
-    BL uart_write
-
-    ADR X0, CRLF
-    MOV X1, #2
-    BL uart_write
-
-    B _shell
-
-.section .rodata
-SHELL_PROMPT: .ascii "> "
-CRLF: .ascii "\r\n"

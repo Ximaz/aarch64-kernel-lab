@@ -9,4 +9,4 @@ disable_fifo:
     RET
 
 .section .rodata
-.equ AUX_MU_IIR_REG, 0x3F215048
+AUX_MU_IIR_REG = 0x3F215048

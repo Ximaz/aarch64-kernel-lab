@@ -9,4 +9,4 @@ set_baud_value:
     RET
 
 .section .rodata
-.equ AUX_MU_BAUD, 0x3F215068
+AUX_MU_BAUD = 0x3F215068

@@ -31,5 +31,5 @@ uart_read_byte.done:
     RET
 
 .section .rodata
-.equ AUX_MU_LSR_REG, 0x3F215054
-.equ AUX_MU_IO_REG, 0x3F215040
+AUX_MU_LSR_REG = 0x3F215054
+AUX_MU_IO_REG = 0x3F215040

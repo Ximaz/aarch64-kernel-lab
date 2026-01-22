@@ -9,4 +9,4 @@ enable_mini_uart:
     RET
 
 .section .rodata
-.equ AUXENB, 0x3F215004
+AUXENB = 0x3F215004

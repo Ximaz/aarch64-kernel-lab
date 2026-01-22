@@ -9,4 +9,4 @@ disable_auto_control_flow:
     RET
 
 .section .rodata
-.equ AUX_MU_MCR_REG, 0x3F215050
+AUX_MU_MCR_REG = 0x3F215050
