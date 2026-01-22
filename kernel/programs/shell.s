@@ -25,16 +25,16 @@ shell:
     ADR X0, __stdin_buffer
     ADR X1, SHELL_CMD_HELP
     BL memcmp
-    CBZ X0, shell.help
+    CBZ X0, .help
 
-shell.invalid_cmd:
+.invalid_cmd:
     ADR X0, SHELL_INVALID_CMD
     MOV X1, SHELL_INVALID_CMD_LEN
     BL uart_write
     BL uart_write_crlf
     B shell
 
-shell.help:
+.help:
     ADR X0, SHELL_HELP
     MOV X1, SHELL_HELP_LEN
     BL uart_write

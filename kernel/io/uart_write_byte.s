@@ -16,10 +16,10 @@
 .global uart_write_byte
 uart_write_byte:
     MOV W1, W0
-uart_write_byte.wait:
+.wait:
     LDR X0, =AUX_MU_LSR_REG
     LDR W0, [X0]
-    TBZ W0, #5, uart_write_byte.wait
+    TBZ W0, #5, .wait
     LDR X0, =AUX_MU_IO_REG
     STRB W1, [X0]
     RET

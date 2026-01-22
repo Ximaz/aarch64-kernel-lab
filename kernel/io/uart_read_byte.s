@@ -16,12 +16,12 @@
 uart_read_byte:
     LDR X0, =AUX_MU_LSR_REG
     LDR W1, [X0]
-    TBZ W1, #0, uart_read_byte.sleep
+    TBZ W1, #0, .sleep
     LDR X0, =AUX_MU_IO_REG
     LDR W0, [X0]
     AND W0, W0, #0xff
     RET
-uart_read_byte.sleep:
+.sleep:
     WFE
     B uart_read_byte
 

@@ -26,26 +26,26 @@ uart_read_line:
     MOV X3, #0
     MOV X4, X1
     SUB X4, X4, #1
-uart_read_line.loop:
+.loop:
     CMP X3, X4
-    BEQ uart_read_line.done
-uart_read_line.wait:
+    BEQ .done
+.wait:
     LDR X0, =AUX_MU_LSR_REG
     LDR W0, [X0]
-    TBNZ W0, #0, uart_read_line.get_byte
+    TBNZ W0, #0, .get_byte
     WFE
-    B uart_read_line.wait
-uart_read_line.get_byte:
+    B .wait
+.get_byte:
     LDR X0, =AUX_MU_IO_REG
     LDR W0, [X0]
     AND W0, W0, #0xff
     CMP W0, #'\r'
-    BEQ uart_read_line.done
+    BEQ .done
     STRB W0, [X2], #1
     ADD X3, X3, #1
     BL uart_write_byte
-    B uart_read_line.loop
-uart_read_line.done:
+    B .loop
+.done:
     BL uart_write_crlf
     MOV X0, X3
     LDP X29, X30, [SP], #16

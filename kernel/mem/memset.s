@@ -17,11 +17,11 @@
 .global memset
 memset:
     MOV X3, X0
-memset.loop:
-    CBZ X2, memset.done
+.loop:
+    CBZ X2, .done
     STRB W1, [X0], #1
     SUB X2, X2, #1
     B memset
-memset.done:
+.done:
     MOV X0, X3
     RET

@@ -26,15 +26,15 @@ uart_read:
     MOV X3, #0
     MOV X4, X1
     SUB X4, X4, #1
-uart_read.loop:
+.loop:
     CMP X3, X4
-    BEQ uart_read.done
+    BEQ .done
     BL uart_read_byte
     STRB W0, [X2], #1
-    CBZ W0, uart_read.done
+    CBZ W0, .done
     ADD X3, X3, #1
-    B uart_read.loop
-uart_read.done:
+    B .loop
+.done:
     MOV X0, X3
     LDP X29, X30, [SP], #16
     RET

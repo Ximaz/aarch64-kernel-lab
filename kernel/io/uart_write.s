@@ -21,13 +21,13 @@ uart_write:
     MOV X5, X0
     MOV X3, #0
     MOV X4, X1
-uart_write.loop:
+.loop:
     CMP X3, X4
-    BEQ uart_write.done
+    BEQ .done
     LDRB W0, [X5], #1
     BL uart_write_byte
     ADD X3, X3, #1
-    B uart_write.loop
-uart_write.done:
+    B .loop
+.done:
     LDP X29, X30, [SP], #16
     RET
