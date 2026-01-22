@@ -27,13 +27,7 @@ _start:
     BL clear_bss_section
     BL clear_stdin_buffer
 
-    BL _configure_uart
-
-    B shell
-
-_configure_uart:
-    STP X29, X30, [SP, #-16]!
-    MOV X29, SP
+    // Configure UART
     BL enable_mini_uart
     BL disable_transmitter_receiver
     BL disable_interrupt
@@ -43,5 +37,5 @@ _configure_uart:
     BL disable_fifo
     BL enable_transmitter_receiver
     BL enable_interrupt_request_1
-    LDP X29, X30, [SP], #16
-    RET
+
+    B shell

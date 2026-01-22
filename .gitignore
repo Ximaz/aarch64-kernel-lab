@@ -3,4 +3,5 @@
 docs/Intel 64 and IA-32 Architectures Software Developer's Manual Volume 3 (3A, 3B, 3C & 3D) System Programming Guide.pdf
 kernel8.elf
 kernel8.img
+kernel8.map
 .DS_Store

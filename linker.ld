@@ -1,8 +1,12 @@
+ENTRY(_start)
+EXTERN(_start)
+
 PHDRS
 {
     text PT_LOAD FLAGS (PF_R | PF_X);
     rodata PT_LOAD FLAGS (PF_R);
     data PT_LOAD FLAGS (PF_R | PF_W);
+    debug PT_LOAD FLAGS (PF_NOTE);
 }
 
 SECTIONS
@@ -11,13 +15,15 @@ SECTIONS
 
     .text :
     {
-        kernel/entrypoint.o;
+        . = ALIGN(16);
         *(.text)
     } :text
 
     .rodata :
     {
+        . = ALIGN(16);
         *(.rodata)
+        kernel/entrypoint.o(.note.gnu.build-id)
     } :rodata
 
     .bss :
@@ -37,4 +43,14 @@ SECTIONS
         . += 0x4000; /* 16kb */
         __stack_top = .;
     } :data
+
+    .debug :
+    {
+        . = ALIGN(16);
+        KEEP(*(.note.GNU-stack))
+        KEEP(*(.debug*))
+        KEEP(*(.rela*))
+        KEEP(*(.iplt))
+        KEEP(*(.igot.plt))
+    } :debug
 }

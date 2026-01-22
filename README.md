@@ -3,6 +3,12 @@
 Through this project, I'm learning what is kernel development as well as the
 ARMv8 instruction set architecture.
 
+Target CPU : cortex-a53 (64 bits)
+
+Target Architecture : ARMv8
+
+Target board : Raspberry PI 3b
+
 ## Toolchain
 
 To build this project, you will need a few tools. I'm working on MacOS, so I
@@ -38,6 +44,16 @@ $ lldb
 (lldb) breakpoint _start
 (lldb) continue
 ```
+
+## Release mode
+
+If you want to start the kernel in release mode, you can do so using the
+following command :
+```bash
+make release
+```
+
+This will start the QEMU virtual machine and your prompt will be requisitioned.
 
 ## Credits
 
