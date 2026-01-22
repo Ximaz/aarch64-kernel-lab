@@ -11,15 +11,15 @@
 //   The byte to write must be stored in the 8 least significant bits of W0.
 //
 // Affected registers
-//   X0, W1, W2
+//   X0, W1
 // -----------------------------------------------------------------------------
 .global uart_write_byte
 uart_write_byte:
     MOV W1, W0
-    LDR X0, =AUX_MU_LSR_REG
 uart_write_byte.wait:
-    LDR W2, [X0]
-    TBZ W2, #5, uart_write_byte.wait
+    LDR X0, =AUX_MU_LSR_REG
+    LDR W0, [X0]
+    TBZ W0, #5, uart_write_byte.wait
     LDR X0, =AUX_MU_IO_REG
     STRB W1, [X0]
     RET

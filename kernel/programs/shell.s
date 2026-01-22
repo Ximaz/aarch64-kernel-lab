@@ -2,7 +2,7 @@
 
 .extern __stdin_buffer
 
-.extern uart_read
+.extern uart_read_line
 .extern uart_write
 .extern uart_write_crlf
 .extern memcmp
@@ -17,7 +17,7 @@ shell:
 
     ADR X0, __stdin_buffer
     MOV X1, #127
-    BL uart_read
+    BL uart_read_line
     MOV X5, X0 // Copy the number of read bytes
 
     // Look for the 'help' command
@@ -48,5 +48,5 @@ SHELL_CMD_HELP: .ascii "help"
 SHELL_INVALID_CMD: .ascii "Invalid command"
 SHELL_INVALID_CMD_LEN = . - SHELL_INVALID_CMD
 
-SHELL_HELP: .ascii "help\r\n"
+SHELL_HELP: .ascii "help"
 SHELL_HELP_LEN = . - SHELL_HELP

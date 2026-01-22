@@ -20,15 +20,10 @@ uart_read_byte:
     LDR X0, =AUX_MU_IO_REG
     LDR W0, [X0]
     AND W0, W0, #0xff
-    CMP W0, #'\r'
-    BEQ uart_read_byte.done
     RET
 uart_read_byte.sleep:
     WFE
     B uart_read_byte
-uart_read_byte.done:
-    MOV W0, #0
-    RET
 
 .section .rodata
 AUX_MU_LSR_REG = 0x3F215054
