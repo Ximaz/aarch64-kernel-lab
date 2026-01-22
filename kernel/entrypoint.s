@@ -21,6 +21,7 @@
 
 .extern read
 .extern write_byte
+.extern write
 
 
 _start:
@@ -59,6 +60,11 @@ _shell:
     MOV X1, #127
     BL read
 
-    NOP
+    MOV X1, X0
+    ADR X0, __stdin_buffer
+    BL write
+
+    MOV X0, #'\n'
+    BL write_byte
 
     B _shell
