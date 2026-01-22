@@ -32,6 +32,9 @@ debug: kernel8.img
 # (lldb) gdb-remote localhost:1234
 	$(EMULATOR) -serial null -serial stdio -M raspi3b -kernel $< -display none -S -s
 
+release: kernel8.img
+	$(EMULATOR) -serial null -serial stdio -M raspi3b -kernel $< -display none
+
 clean:
 	rm -f $(OBJS)
 
