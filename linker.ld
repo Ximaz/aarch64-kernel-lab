@@ -1,6 +1,7 @@
 PHDRS
 {
     text PT_LOAD FLAGS (PF_R | PF_X);
+    rodata PT_LOAD FLAGS (PF_R);
     data PT_LOAD FLAGS (PF_R | PF_W);
 }
 
@@ -10,14 +11,14 @@ SECTIONS
 
     .text :
     {
+        kernel/entrypoint.o;
         *(.text)
     } :text
 
-
-    .data :
+    .rodata :
     {
-        *(.data)
-    } :data
+        *(.rodata)
+    } :rodata
 
     .bss :
     {

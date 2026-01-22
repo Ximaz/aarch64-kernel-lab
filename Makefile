@@ -4,12 +4,17 @@ OBJCOPY		:=	aarch64-elf-objcopy
 READELF		:=	aarch64-elf-readelf
 EMULATOR	:=	qemu-system-aarch64
 LD_SCRIPT	:=	./linker.ld
+SRCS		:=	$(shell find kernel -name '*.s')
+OBJS		:=	$(SRCS:.s=.o)
 
-entrypoint.o: entrypoint.s
+all: $(OBJS)
+	$(MAKE) kernel8.img
+
+%.o: %.s
 	$(ASSEMBLER) -c $< -o $@
 
-kernel8.elf: entrypoint.o
-	$(LINKER) -T $(LD_SCRIPT) -o $@ $<
+kernel8.elf: $(OBJS)
+	$(LINKER) -T $(LD_SCRIPT) -o $@ $(OBJS)
 
 kernel8.img: kernel8.elf
 	$(OBJCOPY) -O binary $< $@
@@ -28,7 +33,7 @@ debug: kernel8.img
 	$(EMULATOR) -serial null -serial stdio -M raspi3b -kernel $< -display none -S -s
 
 clean:
-	rm -f entrypoint.o
+	rm -f $(OBJS)
 
 fclean: clean
 	rm -f kernel8.img kernel8.elf
