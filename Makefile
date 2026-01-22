@@ -1,5 +1,10 @@
-ASSEMBLER	:=	aarch64-elf-gcc
+ASSEMBLER	:=	aarch64-elf-as
+ASMFLAGS	:=	--fatal-warnings --warn --info
 LINKER		:=	aarch64-elf-ld
+LDFLAGS		:=	--warn-execstack-objects \
+				--error-execstack \
+				--error-rwx-segments \
+				-z text
 OBJCOPY		:=	aarch64-elf-objcopy
 READELF		:=	aarch64-elf-readelf
 EMULATOR	:=	qemu-system-aarch64
@@ -11,10 +16,10 @@ all: $(OBJS)
 	$(MAKE) kernel8.img
 
 %.o: %.s
-	$(ASSEMBLER) -c $< -o $@
+	$(ASSEMBLER) $(ASMFLAGS) -c $< -o $@
 
 kernel8.elf: $(OBJS)
-	$(LINKER) -T $(LD_SCRIPT) -o $@ $(OBJS)
+	$(LINKER) $(LDFLAGS) -T $(LD_SCRIPT) -o $@ $(OBJS)
 
 kernel8.img: kernel8.elf
 	$(OBJCOPY) -O binary $< $@
