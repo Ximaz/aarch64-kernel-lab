@@ -19,9 +19,8 @@
 .extern set_uart_bit_mode
 .extern disable_auto_control_flow
 
-.extern read
-.extern write_byte
-.extern write
+.extern uart_read
+.extern uart_write
 
 
 _start:
@@ -53,18 +52,24 @@ _configure_uart:
     RET
 
 _shell:
-    MOV X0, #'>'
-    BL write_byte
+    ADR X0, SHELL_PROMPT
+    MOV X1, #2
+    BL uart_write
 
     ADR X0, __stdin_buffer
     MOV X1, #127
-    BL read
+    BL uart_read
 
     MOV X1, X0
     ADR X0, __stdin_buffer
-    BL write
+    BL uart_write
 
-    MOV X0, #'\n'
-    BL write_byte
+    ADR X0, CRLF
+    MOV X1, #2
+    BL uart_write
 
     B _shell
+
+.section .rodata
+SHELL_PROMPT: .ascii "> "
+CRLF: .ascii "\r\n"

@@ -1,7 +1,7 @@
 .section .text
 
 // -----------------------------------------------------------------------------
-// void write_byte(
+// void uart_write_byte(
 //    uint8_t byte = W0
 // )
 //
@@ -13,13 +13,13 @@
 // Affected registers
 //   X0, W1, W2
 // -----------------------------------------------------------------------------
-.global write_byte
-write_byte:
+.global uart_write_byte
+uart_write_byte:
     MOV W1, W0
     LDR X0, =AUX_MU_LSR_REG
-write_byte.wait:
+uart_write_byte.wait:
     LDR W2, [X0]
-    TBZ W2, #5, write_byte.wait
+    TBZ W2, #5, uart_write_byte.wait
     LDR X0, =AUX_MU_IO_REG
     STRB W1, [X0]
     RET

@@ -1,7 +1,7 @@
 .section .text
 
 // -----------------------------------------------------------------------------
-// uint8_t read_byte(void)
+// uint8_t uart_read_byte(void)
 //
 // Description
 //   This procedure reads a byte from mini UART.
@@ -12,21 +12,21 @@
 // Affected registers
 //   X0, W1
 // -----------------------------------------------------------------------------
-.global read_byte
-read_byte:
+.global uart_read_byte
+uart_read_byte:
     LDR X0, =AUX_MU_LSR_REG
     LDR W1, [X0]
-    TBZ W1, #0, read_byte.sleep
+    TBZ W1, #0, uart_read_byte.sleep
     LDR X0, =AUX_MU_IO_REG
     LDR W0, [X0]
     AND W0, W0, #0xff
     CMP W0, #'\r'
-    BEQ read_byte.done
+    BEQ uart_read_byte.done
     RET
-read_byte.sleep:
+uart_read_byte.sleep:
     WFE
-    B read_byte
-read_byte.done:
+    B uart_read_byte
+uart_read_byte.done:
     MOV W0, #0
     RET
 

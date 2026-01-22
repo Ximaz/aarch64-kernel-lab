@@ -1,8 +1,8 @@
 .section .text
-.extern read_byte
+.extern uart_read_byte
 
 // -----------------------------------------------------------------------------
-// uint64_t read(
+// uint64_t uart_read(
 //    char *dest    = X0,
 //    uint64_t size = X1
 // )
@@ -18,23 +18,23 @@
 // Affected registers
 //   X0, X1, X3, X4, X29, X30, SP
 // -----------------------------------------------------------------------------
-.global read
-read:
+.global uart_read
+uart_read:
     STP X29, X30, [SP, #-16]!
     MOV X29, SP
     MOV X2, X0
     MOV X3, #0
     MOV X4, X1
     SUB X4, X4, #1
-read.loop:
+uart_read.loop:
     CMP X3, X4
-    BEQ read.done
-    BL read_byte
+    BEQ uart_read.done
+    BL uart_read_byte
     STRB W0, [X2], #1
-    CBZ W0, read.done
+    CBZ W0, uart_read.done
     ADD X3, X3, #1
-    B read.loop
-read.done:
+    B uart_read.loop
+uart_read.done:
     MOV X0, X3
     LDP X29, X30, [SP], #16
     RET
