@@ -11,11 +11,12 @@ PHDRS
 
 SECTIONS
 {
-    . = 0x80000;
+    . = 0x40080000;
 
     .text :
     {
         . = ALIGN(16);
+        kernel/_start.o(.text)
         *(.text)
     } :text
 
@@ -30,23 +31,23 @@ SECTIONS
     {
         . = ALIGN(16);
 
-        __stdin_buffer = .;
-        . += 128;
-        __stdin_buffer_size = . - __stdin_buffer;
+        bss_start = .;
 
-        __bss_start = .;
-        . += 0x4000;
-        __bss_size = . - __bss_start;
+        stdin_buffer = .;
+        . += 128;
+        stdin_buffer_size = . - stdin_buffer;
+
+        . = bss_start + 0x4000;
+        bss_end = .;
     } :data
 
     .stack :
     {
         . = ALIGN(16);
 
-        __stack_bottom = .;
-        . += 0x4000;
-        __stack_top = .;
-        __stack_size = __stack_top - __stack_bottom;
+        stack_bottom = .;
+        . += 0x4100;
+        stack_top = .;
     } :data
 
     .debug :
@@ -58,4 +59,12 @@ SECTIONS
         KEEP(*(.iplt))
         KEEP(*(.igot.plt))
     } :debug
+
+    .dtb :
+    {
+        . = ALIGN(16);
+        dtb_start = .;     /* symbol for assembly to access DTB */
+        KEEP(*(.data))
+        dtb_end = .;
+    } :data
 }

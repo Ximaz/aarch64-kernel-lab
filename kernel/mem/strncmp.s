@@ -20,16 +20,16 @@
 .global strncmp
 strncmp:
     SUB X2, X2, #1
-.loop:
+strncmp.loop:
     LDRB W3, [X0], #1
     LDRB W4, [X1], #1
-    CBZ W3, .done
-    CBZ W4, .done
-    CBZ X2, .done
+    CBZ W3, strncmp.done
+    CBZ W4, strncmp.done
+    CBZ X2, strncmp.done
     SUB X2, X2, #1
     CMP W3, W4
-    BEQ .loop
-.done:
+    BEQ strncmp.loop
+strncmp.done:
     MOV W0, W3
     SUB W0, W0, W4
     RET

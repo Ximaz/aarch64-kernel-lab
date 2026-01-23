@@ -13,7 +13,7 @@ ASMFLAGS	:=	--fatal-warnings \
 				--gdwarf-4 \
 				-mverbose-error \
 				-march=armv8-a \
-				-mcpu=cortex-a53+nosimd \
+				-mcpu=cortex-a57 \
 				--noexecstack
 
 LINKER		:=	$(AARCH_ELF_)ld
@@ -48,30 +48,39 @@ GCC			:=	clang
 
 QEMU		:=	qemu-system-aarch64
 QEMU_COM_SOCK	:= /tmp/rpi-tty.sock
+QEMU_MACHINE	:=	virt-10.1
+QEMU_DTB	:=	$(QEMU_MACHINE).dtb
+QEMU_DTB_OBJ := $(QEMU_DTB:.dtb=.dtb.o)
 QEMUFLAGS	:=	-serial null \
 				-display none \
-				-M virt-10.1 \
+				-M $(QEMU_MACHINE) \
 				-cpu cortex-a57 \
 				-smp 1 \
-				-accel tcg,hvf \
-				-serial stdio \
+				-serial stdio
 # 				-chardev socket,id=tty0,path=$(QEMU_COM_SOCK),server=on,wait=off \
   				-serial chardev:tty0
 LD_SCRIPT	:=	./linker.ld
+LLDB_PROFILE	:=	./remote.lldb
 
 %.o: %.s
 	$(ASSEMBLER) $(ASMFLAGS) -c $< -o $@
 
-all: $(KERNEL_IMG) bootloader_communication
+all: $(KERNEL_IMG)
 
 $(KERNEL_IMG): $(KERNEL_ELF)
 	$(OBJCOPY) -O binary $< $@
 
-$(KERNEL_ELF): $(OBJS)
-	$(LINKER) $(LDFLAGS) -T $(LD_SCRIPT) -o $@ $(OBJS)
+$(KERNEL_ELF): $(OBJS) $(QEMU_DTB_OBJ)
+	$(LINKER) $(LDFLAGS) -T $(LD_SCRIPT) -o $@ $(OBJS) $(QEMU_DTB_OBJ)
 
-asm: $(KERNEL_IMG)
+asm: $(KERNEL_IMG) $(QEMU_DTB)
 	$(QEMU) $(QEMUFLAGS) -d in_asm -kernel $<
+
+$(QEMU_DTB):
+	$(QEMU) -M $(QEMU_MACHINE),dumpdtb=$(QEMU_DTB) -nographic
+
+$(QEMU_DTB_OBJ): $(QEMU_DTB)
+	$(OBJCOPY) -I binary -O elf64-littleaarch64 -B aarch64 $< $@
 
 elf_headers: $(KERNEL_ELF)
 	$(READELF) -a $<
@@ -91,11 +100,14 @@ release: $(KERNEL_IMG) bootloader_communication
 bootloader_communication: bootloader_communication.c
 	$(GCC) $< -o $@
 
+lldb: $(LLDB_PROFILE) $(KERNEL_ELF)
+	lldb $(KERNEL_ELF) -s $(LLDB_PROFILE)
+
 clean:
-	rm -f $(OBJS) $(KERNEL_MAP)
+	rm -f $(OBJS) $(QEMU_DTB_OBJ) $(KERNEL_MAP)
 
 fclean: clean
-	rm -f $(KERNEL_IMG) $(KERNEL_ELF)
+	rm -f $(KERNEL_IMG) $(KERNEL_ELF) bootloader_communication
 
 re: fclean all
 

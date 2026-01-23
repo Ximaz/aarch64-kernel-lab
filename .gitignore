@@ -1,8 +1,11 @@
 *.o
-# Although interesting, it is unrelated as it's the x86-64 ISA, not ARMv8...
-docs/Intel 64 and IA-32 Architectures Software Developer's Manual Volume 3 (3A, 3B, 3C & 3D) System Programming Guide.pdf
+# Although interesting, they are too large files, but basically, it's downloaded
+# online documentation from the official ARM developer website.
+docs/*.pdf
 kernel8.elf
 kernel8.img
 kernel8.map
 .DS_Store
 bootloader_communication
+*.dtb
+*.dts

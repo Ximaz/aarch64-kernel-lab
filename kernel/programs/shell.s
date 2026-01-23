@@ -1,6 +1,6 @@
 .section .text
 
-.extern __stdin_buffer
+.extern stdin_buffer
 
 .extern uart_read_line
 .extern uart_write
@@ -21,21 +21,21 @@ shell:
     MOV X1, #2
     BL uart_write
 
-    ADR X0, __stdin_buffer
+    ADR X0, stdin_buffer
     MOV X1, #127
     BL uart_read_line
     STR X0, [X29] // Copy the number of read bytes on the stack
 
     // Look for the 'help' command
     MOV X2, X0
-    ADR X0, __stdin_buffer
+    ADR X0, stdin_buffer
     ADR X1, SHELL_CMD_HELP
     BL strncmp
     CBZ X0, .help
 
     // Look for the 'echo' command
     MOV X2, SHELL_CMD_ECHO_LEN
-    ADR X0, __stdin_buffer
+    ADR X0, stdin_buffer
     ADR X1, SHELL_CMD_ECHO
     BL strncmp
     CBZ X0, .echo
@@ -59,7 +59,7 @@ shell:
     B .continue
 
 .echo:
-    ADR X0, __stdin_buffer
+    ADR X0, stdin_buffer
     ADD X0, X0, #5
     LDR X1, [X29]
     SUB X1, X1, #5
