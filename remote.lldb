@@ -1,0 +1,8 @@
+gdb-remote localhost:1234
+b bootloader
+continue
+target stop-hook add
+    register read
+    stack backtrace
+    disassemble --pc
+DONE

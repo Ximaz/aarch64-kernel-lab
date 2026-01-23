@@ -64,5 +64,6 @@ Here is the list of resources I'm learning from to build this project :
 - ARMv8 System Registers : https://developer.arm.com/documentation/102374/0103/Registers-in-AArch64---system-registers
 - mini UART setup on RasPI3b : https://oscapstone.github.io/labs/hardware/uart.html
 - QEMU ARM Emulation : https://www.qemu.org/docs/master/system/arm/emulation.html
+- Devicetree Blob structure : https://devicetree-specification.readthedocs.io/en/stable/flattened-format.html
 
 I will try to keep this list as updated as possible.

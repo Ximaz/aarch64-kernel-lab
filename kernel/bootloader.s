@@ -1,22 +1,15 @@
 .section .text
 
-.global _start
+.extern get_uartclk_config
 
-_start:
-    MRS X0, MPIDR_EL1
-    TBNZ X0, #30, bootloader // Unique processor system
-    AND X0, X0, #0xFF  // Get Affinity 0
-    CBZ X0, bootloader       // If core ID is zero, continue to boot
-
-    LDR X0, =PSCI_CPU_OFF
-    SMC #0
-
-.wait:
-    WFI
-    B .
-
+.global bootloader
 bootloader:
-    B bootloader
+    STP X29, X30, [SP, #-32]!
+    MOV X29, SP
 
-.section .rodata
-PSCI_CPU_OFF = 0x84000002
+    BL get_uartclk_config
+    STR X0, [X29, #16] // store the uart clock frequency (in Hz)
+    STR X1, [X29, #24] // store the pl011 base address
+
+    LDP X29, X30, [SP], #32
+    B bootloader
