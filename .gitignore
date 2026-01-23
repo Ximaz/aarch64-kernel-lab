@@ -5,3 +5,4 @@ kernel8.elf
 kernel8.img
 kernel8.map
 .DS_Store
+bootloader_communication

@@ -23,7 +23,7 @@ SECTIONS
     {
         . = ALIGN(16);
         *(.rodata)
-        kernel/entrypoint.o(.note.gnu.build-id)
+        *(.note.gnu.build-id)
     } :rodata
 
     .bss :
