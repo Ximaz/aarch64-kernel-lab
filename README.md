@@ -3,11 +3,11 @@
 Through this project, I'm learning what is kernel development as well as the
 ARMv8 instruction set architecture.
 
-Target CPU : cortex-a53 (64 bits)
+Target CPU : cortex-a57 (64 bits)
 
-Target Architecture : ARMv8
+Target Architecture : ARMv8-A
 
-Target board : Raspberry PI 3b
+Target board : QEMU system aarch64 virt 10.1 board
 
 ## Toolchain
 
@@ -63,5 +63,6 @@ Here is the list of resources I'm learning from to build this project :
 - ARMv8 Base Instructions : https://developer.arm.com/documentation/ddi0602/2025-12/Base-Instructions
 - ARMv8 System Registers : https://developer.arm.com/documentation/102374/0103/Registers-in-AArch64---system-registers
 - mini UART setup on RasPI3b : https://oscapstone.github.io/labs/hardware/uart.html
+- QEMU ARM Emulation : https://www.qemu.org/docs/master/system/arm/emulation.html
 
 I will try to keep this list as updated as possible.
