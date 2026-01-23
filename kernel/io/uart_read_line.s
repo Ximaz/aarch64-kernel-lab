@@ -11,6 +11,7 @@
 //   This procedure reads a chunk of bytes from mini UART.
 //   If '\r' (0xd, null-terminator) is encountered, the procedure returns.
 //   If backspace (0x7f) is encountered, '\b' is printed, cursor gets seek.
+//   If '\t' (0x9) is encountered, it is replaced by four ' ' (0x20).
 //   If the number of bytes read reaches 'size', the procedure returns.
 //   Each byte is stored sequentially in the 'dest' buffer.
 //   The procedure returns the total number of bytes read.
@@ -44,6 +45,8 @@ uart_read_line:
     BEQ .done
     CMP W0, #0x7f
     BEQ .seek_cursor_left
+    CMP W0, #'\t'
+    BEQ .tab_to_space
     STRB W0, [X2], #1
     ADD X3, X3, #1
     BL uart_write_byte
@@ -56,6 +59,22 @@ uart_read_line:
     MOV W0, #' '
     BL uart_write_byte
     MOV W0, #'\b'
+    BL uart_write_byte
+    B .loop
+.tab_to_space:
+    STRB W0, [X2]
+    STRB W0, [X2]
+    STRB W0, [X2]
+    STRB W0, [X2]
+    ADD X2, X2, #4
+    ADD X3, X3, #4
+    MOV W0, #' '
+    BL uart_write_byte
+    MOV W0, #' '
+    BL uart_write_byte
+    MOV W0, #' '
+    BL uart_write_byte
+    MOV W0, #' '
     BL uart_write_byte
     B .loop
 .done:
