@@ -3,7 +3,10 @@ OBJS		:=	$(SRCS:.s=.o)
 KERNEL_MAP	:=	kernel8.map
 KERNEL_ELF	:=	kernel8.elf
 KERNEL_IMG	:=	kernel8.img
-ASSEMBLER	:=	aarch64-elf-as
+
+AARCH_ELF_	:=	aarch64-elf-
+
+ASSEMBLER	:=	$(AARCH_ELF_)as
 ASMFLAGS	:=	--fatal-warnings \
 				--warn \
 				--info \
@@ -12,7 +15,8 @@ ASMFLAGS	:=	--fatal-warnings \
 				-march=armv8-a \
 				-mcpu=cortex-a53+nosimd \
 				--noexecstack
-LINKER		:=	aarch64-elf-ld
+
+LINKER		:=	$(AARCH_ELF_)ld
 LDFLAGS		:=	--warn-execstack-objects \
 				--error-execstack \
 				--warn-execstack \
@@ -31,25 +35,32 @@ LDFLAGS		:=	--warn-execstack-objects \
 				--orphan-handling=error \
 				-Map=$(KERNEL_MAP) \
 				--build-id=sha1
-OBJCOPY		:=	aarch64-elf-objcopy
-OBJDUMP		:=	aarch64-elf-objdump
-NM			:=	aarch64-elf-nm
-READELF		:=	aarch64-elf-readelf
+
+OBJCOPY		:=	$(AARCH_ELF_)objcopy
+
+OBJDUMP		:=	$(AARCH_ELF_)objdump
+
+NM			:=	$(AARCH_ELF_)nm
+
+READELF		:=	$(AARCH_ELF_)readelf
+
+GCC			:=	clang
+
 QEMU		:=	qemu-system-aarch64
+QEMU_COM_SOCK	:= /tmp/rpi-tty.sock
 QEMUFLAGS	:=	-serial null \
-				-serial stdio \
 				-display none \
 				-cpu cortex-a53 \
-				-M raspi3b
+				-M raspi3b \
+				-serial stdio
+# 				-chardev socket,id=tty0,path=$(QEMU_COM_SOCK),server=on,wait=off \
+  				-serial chardev:tty0
 LD_SCRIPT	:=	./linker.ld
-
-all: $(OBJS)
-	$(MAKE) kernel8.img
 
 %.o: %.s
 	$(ASSEMBLER) $(ASMFLAGS) -c $< -o $@
 
-all: $(KERNEL_IMG)
+all: $(KERNEL_IMG) bootloader_communication
 
 $(KERNEL_IMG): $(KERNEL_ELF)
 	$(OBJCOPY) -O binary $< $@
@@ -72,8 +83,11 @@ debug: $(KERNEL_IMG)
 # (lldb) gdb-remote localhost:1234
 	$(QEMU) $(QEMUFLAGS) -S -s -kernel $<
 
-release: $(KERNEL_IMG)
+release: $(KERNEL_IMG) bootloader_communication
 	$(QEMU) $(QEMUFLAGS) -kernel $<
+
+bootloader_communication: bootloader_communication.c
+	$(GCC) $< -o $@
 
 clean:
 	rm -f $(OBJS) $(KERNEL_MAP)
@@ -81,4 +95,6 @@ clean:
 fclean: clean
 	rm -f $(KERNEL_IMG) $(KERNEL_ELF)
 
-re: fclean $(KERNEL_IMG)
+re: fclean all
+
+.PHONY: all asm elf_headers debug release bootloader_communication clean fclean re
