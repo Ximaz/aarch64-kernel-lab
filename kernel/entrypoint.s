@@ -1,41 +1,19 @@
 .section .text
+.extern boot
 
 .global _start
-
-.extern __stack_top
-
-.extern clear_bss_section
-.extern clear_stdin_buffer
-
-.extern enable_interrupt
-.extern disable_interrupt
-.extern enable_interrupt_request_1
-.extern disable_fifo
-.extern set_baud_value
-.extern disable_transmitter_receiver
-.extern enable_transmitter_receiver
-.extern enable_mini_uart
-.extern set_uart_bit_mode
-.extern disable_auto_control_flow
-
-.extern shell
-
 _start:
-    ADR X0, __stack_top
-    MOV SP, X0
+    MRS X0, MPIDR_EL1
+    TBNZ X0, #30, boot // Unique processor system
+    AND X0, X0, #0xFF // Get Affinity 0
+    CBZ X0, boot // If core ID is zero, continue to boot
 
-    BL clear_bss_section
-    BL clear_stdin_buffer
+    LDR X0, =PSCI_CPU_OFF
+    SMC #0
 
-    // Configure UART
-    BL enable_mini_uart
-    BL disable_transmitter_receiver
-    BL disable_interrupt
-    BL set_uart_bit_mode
-    BL disable_auto_control_flow
-    BL set_baud_value
-    BL disable_fifo
-    BL enable_transmitter_receiver
-    BL enable_interrupt_request_1
+.wait:
+    WFI
+    B .
 
-    B shell
+.section .rodata
+PSCI_CPU_OFF = 0x84000002

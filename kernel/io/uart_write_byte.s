@@ -19,7 +19,10 @@ uart_write_byte:
 .wait:
     LDR X0, =AUX_MU_LSR_REG
     LDR W0, [X0]
-    TBZ W0, #5, .wait
+    TBNZ W0, #5, .write
+    WFI
+    B .wait
+.write:
     LDR X0, =AUX_MU_IO_REG
     STRB W1, [X0]
     RET

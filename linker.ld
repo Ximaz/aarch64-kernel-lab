@@ -29,19 +29,24 @@ SECTIONS
     .bss :
     {
         . = ALIGN(16);
+
         __stdin_buffer = .;
         . += 128;
+        __stdin_buffer_size = . - __stdin_buffer;
+
         __bss_start = .;
-        . += 0x4000; /* 16kb */
-        __bss_end = .;
+        . += 0x4000;
+        __bss_size = . - __bss_start;
     } :data
 
     .stack :
     {
         . = ALIGN(16);
+
         __stack_bottom = .;
-        . += 0x4000; /* 16kb */
+        . += 0x4000;
         __stack_top = .;
+        __stack_size = __stack_top - __stack_bottom;
     } :data
 
     .debug :

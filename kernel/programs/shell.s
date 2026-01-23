@@ -48,13 +48,15 @@ shell:
     ADR X0, SHELL_HELP
     MOV X1, SHELL_HELP_LEN
     BL uart_write
-    B .loop
+    BL uart_write_crlf
+    B .continue
 
 .help:
     ADR X0, SHELL_HELP
     MOV X1, SHELL_HELP_LEN
     BL uart_write
-    B .loop
+    BL uart_write_crlf
+    B .continue
 
 .echo:
     ADR X0, __stdin_buffer
@@ -62,10 +64,14 @@ shell:
     LDR X1, [X29]
     SUB X1, X1, #5
     CMP X1, #0
-    BLE .done
+    BLE .echo.done
     BL uart_write
-.done:
+.echo.done:
     BL uart_write_crlf
+    B .continue
+
+.continue:
+    WFE
     B .loop
 
 .section .rodata
@@ -80,5 +86,5 @@ SHELL_CMD_ECHO_LEN = . - SHELL_CMD_ECHO
 SHELL_INVALID_CMD: .ascii "Invalid command"
 SHELL_INVALID_CMD_LEN = . - SHELL_INVALID_CMD
 
-SHELL_HELP: .ascii "help\r\necho [argument 1, [argument 2, ...]]\r\n"
+SHELL_HELP: .ascii "help\r\necho [argument 1, [argument 2, ...]]"
 SHELL_HELP_LEN = . - SHELL_HELP

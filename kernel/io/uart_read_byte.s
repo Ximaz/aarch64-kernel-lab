@@ -22,7 +22,7 @@ uart_read_byte:
     AND W0, W0, #0xff
     RET
 .sleep:
-    WFE
+    WFI
     B uart_read_byte
 
 .section .rodata
