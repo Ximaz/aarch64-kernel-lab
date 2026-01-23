@@ -50,9 +50,11 @@ QEMU		:=	qemu-system-aarch64
 QEMU_COM_SOCK	:= /tmp/rpi-tty.sock
 QEMUFLAGS	:=	-serial null \
 				-display none \
-				-cpu cortex-a53 \
-				-M raspi3b \
-				-serial stdio
+				-M virt-10.1 \
+				-cpu cortex-a57 \
+				-smp 1 \
+				-accel tcg,hvf \
+				-serial stdio \
 # 				-chardev socket,id=tty0,path=$(QEMU_COM_SOCK),server=on,wait=off \
   				-serial chardev:tty0
 LD_SCRIPT	:=	./linker.ld
