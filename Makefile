@@ -51,14 +51,12 @@ QEMU_COM_SOCK	:= /tmp/rpi-tty.sock
 QEMU_MACHINE	:=	virt-10.1
 QEMU_DTB	:=	$(QEMU_MACHINE).dtb
 QEMU_DTB_OBJ := $(QEMU_DTB:.dtb=.dtb.o)
-QEMUFLAGS	:=	-serial null \
-				-display none \
-				-M $(QEMU_MACHINE) \
+QEMUFLAGS	:=	-M $(QEMU_MACHINE) \
 				-cpu cortex-a57 \
 				-smp 1 \
-				-serial stdio
+				-nographic
 # 				-chardev socket,id=tty0,path=$(QEMU_COM_SOCK),server=on,wait=off \
-  				-serial chardev:tty0
+#   				-serial chardev:tty0
 LD_SCRIPT	:=	./linker.ld
 LLDB_PROFILE	:=	./remote.lldb
 

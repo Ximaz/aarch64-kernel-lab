@@ -33,9 +33,9 @@ SECTIONS
 
         bss_start = .;
 
-        stdin_buffer = .;
+        stdin_buffer_start = .;
         . += 128;
-        stdin_buffer_size = . - stdin_buffer;
+        stdin_buffer_end = .;
 
         . = bss_start + 0x4000;
         bss_end = .;
