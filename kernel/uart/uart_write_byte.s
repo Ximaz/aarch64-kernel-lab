@@ -1,7 +1,5 @@
 .section .text
 
-.extern uart_write_byte
-
 /* -----------------------------------------------------------------------------
 void uart_write_byte(
   uint8_t char = X0
