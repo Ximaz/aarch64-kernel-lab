@@ -38,7 +38,7 @@ get_uartclk_config:
 
     LDR W0, [X4]
     REV W0, W0
-    ROR X0, X0, #16
+    LSR X0, X0, #16
     LDR W0, [X4, #4]
     REV W0, W0
     STR X0, [X29, #32] // the parsed pl011 base address
