@@ -9,7 +9,7 @@ void setup_uart_baud_rate(
 );
 
 Description : Setup the UARTIBRD and UARTFBRD registers for a given Baud rate
-value. X20 is assumed to contain the PL011 base address
+value. X20 is assumed to contain the PL011 base address.
 
 Affected registers : X0, X1, X2, X3, X4
 

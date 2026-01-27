@@ -6,7 +6,7 @@
 uint8_t uart_read_byte(void);
 
 Description : Block the thread until a byte can be read from UART RX. Return the
-byte into W0. X20 is assumed to contain the PL011 base address
+byte into W0. X20 is assumed to contain the PL011 base address.
 
 Affected registers : X0
 

@@ -14,6 +14,7 @@ bootloader:
 
     // Try to read a byte
     BL uart_read_byte
+    BL uart_write_byte
 
     LDP X29, X30, [SP], #32
     B bootloader
